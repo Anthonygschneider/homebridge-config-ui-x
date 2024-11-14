@@ -4,6 +4,12 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 
 ## BETA
 
+### Breaking Change
+
+This version of the Homebridge UI drops support for NodeJS 16 and earlier, so if you are running on this version of NodeJS or earlier, please update NodeJS prior to installing this update. Details for updating [NodeJS](https://github.com/homebridge/homebridge/wiki/How-To-Update-Node.js).
+
+This version of the Homebridge UI drops support for Raspberry devices running on the armv6 architecture, and will no longer function on the Pi 1 and Pi Zero. Please update your hardware.
+
 ### Plugin Config Validation
 
 This version of Homebridge UI adds validation to plugin config screens. This does not apply to manual plugin configuration (with raw `JSON`).
@@ -17,6 +23,7 @@ This version of Homebridge UI adds validation to plugin config screens. This doe
 If you have a plugin which can be configured multiple times, then an icon will be shown on each configuration block.
 
 Plugin developers:
+
 - Please do not rely on this validation and assume that a user's configuration will be valid
 - All plugins should still validate a configuration when the plugin is started
 - Remember that some users do not use the UI at all, and other users may prefer to configure using raw `JSON` rather than config screens
@@ -126,7 +133,7 @@ Plugin developers:
 
 - ⚠️ After updating to this release, you may find that your UI theme resets to the default. This reset will only occur once. You can visit the settings section to change it back to your preferred theme.
 - ⚠️ If you use the `/api/auth/settings` endpoint (e.g. in a custom application), please note that this endpoint now returns less information for an unauthenticated user.
-It will return a full payload when a valid access token is provided.
+  It will return a full payload when a valid access token is provided.
 
 ### UI Changes
 
