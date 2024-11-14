@@ -1,4 +1,4 @@
-name: Test
+name: Validate that you can install and run across all platforms
 
 on:
   push:
@@ -9,18 +9,31 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build_and_test:
+    name: Build and run npm test
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        node-version: [18.x]
-        include:
-          - os: macos-latest
-            node-version: 18.x
-          - os: windows-2019
-            node-version: 18.x
-          - os: windows-latest
-            node-version: 18.x
+        os: [ubuntu-latest, macos-latest, windows-2019]
+
+    uses: homebridge/.github/.github/workflows/nodejs-build-and-test.yml@latest
+    with:
+      enable_coverage: false
+      # # Code Coverage can only be used in a single run, not in a parallel run - Error: Bad response: 422 {"message":"Can't add a job to a build that is already closed. Build 6224987022 is closed. See docs.coveralls.io/parallel-builds","error":true}
+      # # Coveralls only expects to create a report once per build
+      runs_on: ${{ matrix.os }}
+      install_cmd: npm ci && cd ui && npm ci
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+
+  test_hb_service:
+    needs: build_and_test
+    name: Install and check that it starts across all platforms
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node-version: [18.x, 20.x, 22.x]
 
     runs-on: ${{ matrix.os }}
 
@@ -67,3 +80,9 @@ jobs:
         run: |
           node dist/bin/hb-service.js view
           exit 1
+
+  lint:
+    needs: build_and_test
+    uses: homebridge/.github/.github/workflows/eslint.yml@latest
+    with:
+      install_cmd: npm ci && cd ui && npm ci
