@@ -1,4 +1,4 @@
-name: Node Build
+name: Node Build - Validate that you can install and run across all platforms
 
 on:
   push:
@@ -10,6 +10,7 @@ on:
 
 jobs:
   build_and_test:
+    name: Build and run npm test
     strategy:
       fail-fast: false
       matrix:
@@ -27,18 +28,12 @@ jobs:
 
   test_hb_service:
     needs: build_and_test
+    name: Install and check that it started across all platforms
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        node-version: [18.x]
-        include:
-          - os: macos-latest
-            node-version: 18.x
-          - os: windows-2019
-            node-version: 18.x
-          - os: windows-latest
-            node-version: 18.x
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node-version: [18.x, 20.x, 22.x]
 
     runs-on: ${{ matrix.os }}
 
