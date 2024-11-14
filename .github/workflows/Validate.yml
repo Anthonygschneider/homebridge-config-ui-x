@@ -26,9 +26,10 @@ jobs:
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
 
-  test_hb_service:
+  # Validate that the UI can be installed and ran across all platforms
+  validate_service_starts:
     needs: build_and_test
-    name: Install and check that it starts across all platforms
+    name: Validate
     strategy:
       fail-fast: false
       matrix:
